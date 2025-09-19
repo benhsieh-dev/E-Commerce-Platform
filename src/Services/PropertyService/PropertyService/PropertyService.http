@@ -1,6 +1,82 @@
-@PropertyService_HostAddress = http://localhost:5070
+@PropertyService_HostAddress = http://localhost:5002
 
-GET {{PropertyService_HostAddress}}/weatherforecast/
-Accept: application/json
+### Get all properties
+GET {{PropertyService_HostAddress}}/api/properties
 
-###
+### Get properties with filters
+GET {{PropertyService_HostAddress}}/api/properties?pageNumber=1&pageSize=10&location=New York&propertyType=Apartment&minPrice=100&maxPrice=500&minGuests=2&instantBook=true
+
+### Get property by ID
+GET {{PropertyService_HostAddress}}/api/properties/{{propertyId}}
+
+### Create a new property
+POST {{PropertyService_HostAddress}}/api/properties
+Content-Type: application/json
+
+{
+  "hostId": "550e8400-e29b-41d4-a716-446655440000",
+  "title": "Modern Manhattan Apartment",
+  "description": "Beautiful 2-bedroom apartment in the heart of Manhattan with stunning city views",
+  "address": "123 Broadway Street",
+  "city": "New York",
+  "country": "United States",
+  "latitude": 40.7128,
+  "longitude": -74.0060,
+  "propertyType": 1,
+  "maxGuests": 4,
+  "bedrooms": 2,
+  "bathrooms": 2,
+  "pricePerNight": 250.00,
+  "weeklyDiscount": 10.0,
+  "monthlyDiscount": 20.0,
+  "images": ["apartment1.jpg", "apartment2.jpg", "apartment3.jpg"],
+  "amenities": ["WiFi", "Kitchen", "Air Conditioning", "Heating", "TV", "Washer"],
+  "instantBook": true,
+  "minNights": 2,
+  "maxNights": 30
+}
+
+### Update a property
+PUT {{PropertyService_HostAddress}}/api/properties/{{propertyId}}
+Content-Type: application/json
+
+{
+  "title": "Updated Manhattan Apartment",
+  "pricePerNight": 275.00,
+  "isActive": true,
+  "instantBook": false
+}
+
+### Delete a property
+DELETE {{PropertyService_HostAddress}}/api/properties/{{propertyId}}
+
+### Check property availability
+POST {{PropertyService_HostAddress}}/api/properties/{{propertyId}}/check-availability
+Content-Type: application/json
+
+{
+  "checkIn": "2024-12-15",
+  "checkOut": "2024-12-20"
+}
+
+### Set unavailable dates for a property
+PUT {{PropertyService_HostAddress}}/api/properties/{{propertyId}}/unavailable-dates
+Content-Type: application/json
+
+{
+  "unavailableDates": [
+    {
+      "startDate": "2024-12-24",
+      "endDate": "2024-12-26",
+      "reason": "Holiday maintenance"
+    },
+    {
+      "startDate": "2025-01-01",
+      "endDate": "2025-01-01",
+      "reason": "New Year's Day"
+    }
+  ]
+}
+
+### Get properties by host
+GET {{PropertyService_HostAddress}}/api/properties/host/{{hostId}}

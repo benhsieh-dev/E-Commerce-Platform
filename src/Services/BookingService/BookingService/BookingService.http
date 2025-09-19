@@ -1,0 +1,85 @@
+@BookingService_HostAddress = http://localhost:5003
+
+### Get all bookings
+GET {{BookingService_HostAddress}}/api/bookings
+
+### Get bookings with filters
+GET {{BookingService_HostAddress}}/api/bookings?pageNumber=1&pageSize=10&guestId={{guestId}}&status=Confirmed
+
+### Get booking by ID
+GET {{BookingService_HostAddress}}/api/bookings/{{bookingId}}
+
+### Create a new booking
+POST {{BookingService_HostAddress}}/api/bookings
+Content-Type: application/json
+
+{
+  "propertyId": "550e8400-e29b-41d4-a716-446655440000",
+  "guestId": "660e8400-e29b-41d4-a716-446655440000",
+  "checkInDate": "2024-12-15",
+  "checkOutDate": "2024-12-20",
+  "numberOfGuests": 2,
+  "specialRequests": "Late check-in requested",
+  "cancellationPolicy": 1
+}
+
+### Update a booking
+PUT {{BookingService_HostAddress}}/api/bookings/{{bookingId}}
+Content-Type: application/json
+
+{
+  "numberOfGuests": 3,
+  "specialRequests": "Updated: Late check-in and early breakfast"
+}
+
+### Confirm a booking (host action)
+POST {{BookingService_HostAddress}}/api/bookings/{{bookingId}}/confirm
+Content-Type: application/json
+
+{
+  "message": "Welcome! Looking forward to hosting you."
+}
+
+### Cancel a booking
+POST {{BookingService_HostAddress}}/api/bookings/{{bookingId}}/cancel
+Content-Type: application/json
+
+{
+  "reason": "Change of travel plans"
+}
+
+### Check in to a booking
+POST {{BookingService_HostAddress}}/api/bookings/{{bookingId}}/checkin
+Content-Type: application/json
+
+{
+  "notes": "Guest arrived on time, keys provided"
+}
+
+### Check out from a booking
+POST {{BookingService_HostAddress}}/api/bookings/{{bookingId}}/checkout
+Content-Type: application/json
+
+{
+  "notes": "Property left in good condition"
+}
+
+### Calculate booking price
+POST {{BookingService_HostAddress}}/api/bookings/calculate-price
+Content-Type: application/json
+
+{
+  "propertyId": "550e8400-e29b-41d4-a716-446655440000",
+  "checkInDate": "2024-12-15",
+  "checkOutDate": "2024-12-20",
+  "numberOfGuests": 2
+}
+
+### Get bookings by guest
+GET {{BookingService_HostAddress}}/api/bookings?guestId={{guestId}}
+
+### Get bookings by host
+GET {{BookingService_HostAddress}}/api/bookings?hostId={{hostId}}
+
+### Get bookings by property
+GET {{BookingService_HostAddress}}/api/bookings?propertyId={{propertyId}}

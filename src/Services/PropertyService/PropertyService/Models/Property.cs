@@ -40,17 +40,31 @@ namespace PropertyService.Models
         [Required]
         public decimal PricePerNight { get; set; }
         
+        public decimal? WeeklyDiscount { get; set; }
+        
+        public decimal? MonthlyDiscount { get; set; }
+        
         public List<string> Images { get; set; } = new();
         
         public List<string> Amenities { get; set; } = new();
         
         public bool IsActive { get; set; } = true;
         
+        public bool InstantBook { get; set; } = false;
+        
         public DateTime CreatedAt { get; set; }
         
         public DateTime UpdatedAt { get; set; }
         
         public List<DateRange> UnavailableDates { get; set; } = new();
+        
+        public double AverageRating { get; set; } = 0.0;
+        
+        public int ReviewCount { get; set; } = 0;
+        
+        public int MinNights { get; set; } = 1;
+        
+        public int MaxNights { get; set; } = 365;
     }
 
     public enum PropertyType
@@ -61,12 +75,16 @@ namespace PropertyService.Models
         Villa,
         Cabin,
         Hotel,
-        BedAndBreakfast
+        BedAndBreakfast,
+        Loft,
+        Studio,
+        Cottage
     }
 
     public class DateRange
     {
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
+        public string? Reason { get; set; }
     }
 }
