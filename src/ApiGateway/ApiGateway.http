@@ -1,0 +1,225 @@
+### API Gateway GraphQL Tests
+
+@ApiGatewayUrl = https://localhost:5000
+
+### Health Check
+GET {{ApiGatewayUrl}}/health
+
+### Service Status Check
+GET {{ApiGatewayUrl}}/status
+
+### GraphQL Playground (Browser)
+GET {{ApiGatewayUrl}}/ui/playground
+
+### Get All Users
+POST {{ApiGatewayUrl}}/graphql
+Content-Type: application/json
+
+{
+  "query": "query GetUsers { users { id firstName lastName email role isActive createdAt } }"
+}
+
+### Get User by ID
+POST {{ApiGatewayUrl}}/graphql
+Content-Type: application/json
+
+{
+  "query": "query GetUser($id: ID!) { user(id: $id) { id firstName lastName email phone role isActive createdAt lastLoginAt } }",
+  "variables": {
+    "id": "123e4567-e89b-12d3-a456-426614174000"
+  }
+}
+
+### Search Properties
+POST {{ApiGatewayUrl}}/graphql
+Content-Type: application/json
+
+{
+  "query": "query SearchProperties($location: String, $checkIn: DateTime, $checkOut: DateTime, $guests: Int) { searchProperties(location: $location, checkIn: $checkIn, checkOut: $checkOut, guests: $guests) { id title description pricePerNight maxGuests city state country host { firstName lastName } averageRating reviewCount } }",
+  "variables": {
+    "location": "San Francisco",
+    "checkIn": "2024-07-15T00:00:00.000Z",
+    "checkOut": "2024-07-20T00:00:00.000Z",
+    "guests": 2
+  }
+}
+
+### Get Property with Host Details
+POST {{ApiGatewayUrl}}/graphql
+Content-Type: application/json
+
+{
+  "query": "query GetProperty($id: ID!) { property(id: $id) { id title description propertyType pricePerNight maxGuests bedrooms bathrooms address city state country amenities images isInstantBook host { id firstName lastName email profilePictureUrl } reviews { id overallRating comment reviewer { firstName lastName } createdAt } } }",
+  "variables": {
+    "id": "456e7890-e89b-12d3-a456-426614174000"
+  }
+}
+
+### Get Bookings by Guest
+POST {{ApiGatewayUrl}}/graphql
+Content-Type: application/json
+
+{
+  "query": "query GetGuestBookings($guestId: ID!) { bookingsByGuest(guestId: $guestId) { id checkInDate checkOutDate numberOfGuests totalAmount status property { title city host { firstName lastName } } } }",
+  "variables": {
+    "guestId": "123e4567-e89b-12d3-a456-426614174000"
+  }
+}
+
+### Get Bookings by Host
+POST {{ApiGatewayUrl}}/graphql
+Content-Type: application/json
+
+{
+  "query": "query GetHostBookings($hostId: ID!) { bookingsByHost(hostId: $hostId) { id checkInDate checkOutDate numberOfGuests totalAmount status guest { firstName lastName email } property { title } } }",
+  "variables": {
+    "hostId": "789e0123-e89b-12d3-a456-426614174000"
+  }
+}
+
+### Check Property Availability
+POST {{ApiGatewayUrl}}/graphql
+Content-Type: application/json
+
+{
+  "query": "query CheckAvailability($propertyId: ID!, $checkIn: DateTime!, $checkOut: DateTime!) { checkPropertyAvailability(propertyId: $propertyId, checkIn: $checkIn, checkOut: $checkOut) }",
+  "variables": {
+    "propertyId": "456e7890-e89b-12d3-a456-426614174000",
+    "checkIn": "2024-08-01T00:00:00.000Z",
+    "checkOut": "2024-08-05T00:00:00.000Z"
+  }
+}
+
+### Register New User
+POST {{ApiGatewayUrl}}/graphql
+Content-Type: application/json
+
+{
+  "mutation": "mutation RegisterUser($email: String!, $password: String!, $firstName: String!, $lastName: String!) { register(email: $email, password: $password, firstName: $firstName, lastName: $lastName) { id firstName lastName email role isActive createdAt } }",
+  "variables": {
+    "email": "john.doe@example.com",
+    "password": "securepassword123",
+    "firstName": "John",
+    "lastName": "Doe"
+  }
+}
+
+### User Login
+POST {{ApiGatewayUrl}}/graphql
+Content-Type: application/json
+
+{
+  "mutation": "mutation LoginUser($email: String!, $password: String!) { login(email: $email, password: $password) }",
+  "variables": {
+    "email": "john.doe@example.com",
+    "password": "securepassword123"
+  }
+}
+
+### Create Property
+POST {{ApiGatewayUrl}}/graphql
+Content-Type: application/json
+Authorization: Bearer YOUR_JWT_TOKEN_HERE
+
+{
+  "mutation": "mutation CreateProperty($property: PropertyInput!) { createProperty(property: $property) { id title description pricePerNight city state status host { firstName lastName } } }",
+  "variables": {
+    "property": {
+      "hostId": "789e0123-e89b-12d3-a456-426614174000",
+      "title": "Beautiful Beachfront Condo",
+      "description": "Stunning oceanview condo with modern amenities",
+      "propertyType": 2,
+      "pricePerNight": 200.00,
+      "maxGuests": 4,
+      "bedrooms": 2,
+      "bathrooms": 2,
+      "address": "123 Ocean Drive",
+      "city": "Miami",
+      "state": "Florida",
+      "country": "USA",
+      "postalCode": "33139",
+      "latitude": 25.7617,
+      "longitude": -80.1918,
+      "amenities": ["WiFi", "Pool", "Parking", "Kitchen"],
+      "images": ["image1.jpg", "image2.jpg"],
+      "isInstantBook": true,
+      "minimumStay": 2,
+      "maximumStay": 30
+    }
+  }
+}
+
+### Create Booking
+POST {{ApiGatewayUrl}}/graphql
+Content-Type: application/json
+Authorization: Bearer YOUR_JWT_TOKEN_HERE
+
+{
+  "mutation": "mutation CreateBooking($booking: BookingInput!) { createBooking(booking: $booking) { id checkInDate checkOutDate numberOfGuests totalAmount status property { title } guest { firstName lastName } } }",
+  "variables": {
+    "booking": {
+      "propertyId": "456e7890-e89b-12d3-a456-426614174000",
+      "guestId": "123e4567-e89b-12d3-a456-426614174000",
+      "checkInDate": "2024-08-15T00:00:00.000Z",
+      "checkOutDate": "2024-08-20T00:00:00.000Z",
+      "numberOfGuests": 2,
+      "specialRequests": "Late check-in preferred"
+    }
+  }
+}
+
+### Update Booking Status
+POST {{ApiGatewayUrl}}/graphql
+Content-Type: application/json
+Authorization: Bearer YOUR_JWT_TOKEN_HERE
+
+{
+  "mutation": "mutation UpdateBookingStatus($id: ID!, $status: BookingStatus!) { updateBookingStatus(id: $id, status: $status) { id status updatedAt } }",
+  "variables": {
+    "id": "booking-id-here",
+    "status": 1
+  }
+}
+
+### Cancel Booking
+POST {{ApiGatewayUrl}}/graphql
+Content-Type: application/json
+Authorization: Bearer YOUR_JWT_TOKEN_HERE
+
+{
+  "mutation": "mutation CancelBooking($id: ID!, $reason: String!) { cancelBooking(id: $id, reason: $reason) { id status cancelledAt cancellationReason refundAmount } }",
+  "variables": {
+    "id": "booking-id-here",
+    "reason": "Change of plans"
+  }
+}
+
+### Complex Query - Property with Full Details
+POST {{ApiGatewayUrl}}/graphql
+Content-Type: application/json
+
+{
+  "query": "query GetPropertyFullDetails($id: ID!) { property(id: $id) { id title description propertyType pricePerNight maxGuests bedrooms bathrooms address city state country latitude longitude amenities images houseRules isInstantBook minimumStay maximumStay weeklyDiscount monthlyDiscount status createdAt updatedAt unavailableDates averageRating reviewCount host { id firstName lastName email phone profilePictureUrl role isEmailVerified isPhoneVerified createdAt } reviews { id type overallRating cleanlinessRating accuracyRating checkInRating communicationRating locationRating valueRating comment status createdAt publishedAt isAnonymous reviewer { firstName lastName profilePictureUrl } } } }",
+  "variables": {
+    "id": "456e7890-e89b-12d3-a456-426614174000"
+  }
+}
+
+### Get Properties with Filters
+POST {{ApiGatewayUrl}}/graphql
+Content-Type: application/json
+
+{
+  "query": "query GetPropertiesWithFilters($filter: PropertyFilterInput, $skip: Int, $take: Int) { properties(filter: $filter, skip: $skip, take: $take) { id title pricePerNight city state propertyType maxGuests isInstantBook averageRating reviewCount host { firstName lastName } } }",
+  "variables": {
+    "filter": {
+      "city": "San Francisco",
+      "minPrice": 100,
+      "maxPrice": 300,
+      "minGuests": 2,
+      "instantBookOnly": true
+    },
+    "skip": 0,
+    "take": 10
+  }
+}

@@ -1,0 +1,95 @@
+@PaymentService_HostAddress = http://localhost:5004
+
+### Get all payments
+GET {{PaymentService_HostAddress}}/api/payments
+
+### Get payments with filters
+GET {{PaymentService_HostAddress}}/api/payments?pageNumber=1&pageSize=10&payerId={{guestId}}&status=Completed
+
+### Get payment by ID
+GET {{PaymentService_HostAddress}}/api/payments/{{paymentId}}
+
+### Create a new payment
+POST {{PaymentService_HostAddress}}/api/payments
+Content-Type: application/json
+
+{
+  "bookingId": "550e8400-e29b-41d4-a716-446655440000",
+  "payerId": "660e8400-e29b-41d4-a716-446655440000",
+  "amount": 750.00,
+  "currency": "USD",
+  "paymentType": 0,
+  "paymentMethodId": "770e8400-e29b-41d4-a716-446655440000",
+  "description": "Payment for 5-night stay in Manhattan apartment"
+}
+
+### Create payment intent
+POST {{PaymentService_HostAddress}}/api/payments/create-intent
+Content-Type: application/json
+
+{
+  "bookingId": "550e8400-e29b-41d4-a716-446655440000",
+  "payerId": "660e8400-e29b-41d4-a716-446655440000",
+  "amount": 750.00,
+  "currency": "USD",
+  "paymentType": 0,
+  "paymentMethodId": "770e8400-e29b-41d4-a716-446655440000"
+}
+
+### Process a payment
+POST {{PaymentService_HostAddress}}/api/payments/{{paymentId}}/process
+Content-Type: application/json
+
+{
+  "paymentIntentId": "pi_1234567890abcdef"
+}
+
+### Refund a payment
+POST {{PaymentService_HostAddress}}/api/payments/{{paymentId}}/refund
+Content-Type: application/json
+
+{
+  "amount": 200.00,
+  "reason": "Guest cancelled due to emergency"
+}
+
+### Get payment summary
+GET {{PaymentService_HostAddress}}/api/payments/summary?startDate=2024-01-01&endDate=2024-12-31
+
+### Process host payout
+POST {{PaymentService_HostAddress}}/api/payments/host-payout
+Content-Type: application/json
+
+{
+  "hostId": "880e8400-e29b-41d4-a716-446655440000",
+  "amount": 675.00,
+  "description": "Payout for December bookings",
+  "bookingIds": ["550e8400-e29b-41d4-a716-446655440000"]
+}
+
+###
+### PAYMENT METHODS ENDPOINTS
+###
+
+### Get user payment methods
+GET {{PaymentService_HostAddress}}/api/paymentmethods/user/{{userId}}
+
+### Get payment method by ID
+GET {{PaymentService_HostAddress}}/api/paymentmethods/{{paymentMethodId}}
+
+### Create a new payment method
+POST {{PaymentService_HostAddress}}/api/paymentmethods
+Content-Type: application/json
+
+{
+  "userId": "660e8400-e29b-41d4-a716-446655440000",
+  "type": 0,
+  "stripePaymentMethodId": "pm_1234567890abcdef",
+  "isDefault": true
+}
+
+### Set payment method as default
+PUT {{PaymentService_HostAddress}}/api/paymentmethods/{{paymentMethodId}}/set-default
+
+### Delete payment method
+DELETE {{PaymentService_HostAddress}}/api/paymentmethods/{{paymentMethodId}}

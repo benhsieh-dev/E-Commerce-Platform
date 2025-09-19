@@ -1,0 +1,118 @@
+@ReviewService_HostAddress = http://localhost:5005
+
+### Get all reviews
+GET {{ReviewService_HostAddress}}/api/reviews
+
+### Get reviews with filters
+GET {{ReviewService_HostAddress}}/api/reviews?pageNumber=1&pageSize=10&propertyId={{propertyId}}&reviewType=0&minRating=4
+
+### Get review by ID
+GET {{ReviewService_HostAddress}}/api/reviews/{{reviewId}}?currentUserId={{userId}}
+
+### Create a new review (Guest reviews Property)
+POST {{ReviewService_HostAddress}}/api/reviews
+Content-Type: application/json
+
+{
+  "bookingId": "550e8400-e29b-41d4-a716-446655440000",
+  "reviewerId": "660e8400-e29b-41d4-a716-446655440000",
+  "reviewType": 0,
+  "overallRating": 5,
+  "reviewText": "Amazing property! The location was perfect and the host was incredibly responsive. The apartment was exactly as described and very clean. Would definitely stay here again!",
+  "cleanlinessRating": 5,
+  "accuracyRating": 5,
+  "checkInRating": 5,
+  "communicationRating": 5,
+  "locationRating": 5,
+  "valueRating": 4
+}
+
+### Create a host review of guest
+POST {{ReviewService_HostAddress}}/api/reviews
+Content-Type: application/json
+
+{
+  "bookingId": "770e8400-e29b-41d4-a716-446655440000",
+  "reviewerId": "880e8400-e29b-41d4-a716-446655440000",
+  "reviewType": 1,
+  "overallRating": 5,
+  "reviewText": "Wonderful guest! Very respectful of the property and followed all house rules. Great communication throughout the stay. Would happily host again!",
+  "guestCommunicationRating": 5,
+  "guestCleanlinessRating": 5,
+  "guestRespectRating": 5
+}
+
+### Update a review
+PUT {{ReviewService_HostAddress}}/api/reviews/{{reviewId}}
+Content-Type: application/json
+
+{
+  "overallRating": 4,
+  "reviewText": "Updated review: Good property overall, but had some minor issues with the wifi connectivity.",
+  "communicationRating": 4
+}
+
+### Respond to a review
+POST {{ReviewService_HostAddress}}/api/reviews/{{reviewId}}/respond
+Content-Type: application/json
+
+{
+  "response": "Thank you so much for the wonderful review! We're thrilled you enjoyed your stay and look forward to hosting you again soon."
+}
+
+### Mark review as helpful
+POST {{ReviewService_HostAddress}}/api/reviews/{{reviewId}}/helpful?userId={{userId}}
+Content-Type: application/json
+
+{
+  "isHelpful": true
+}
+
+### Flag a review
+POST {{ReviewService_HostAddress}}/api/reviews/{{reviewId}}/flag?flaggerId={{userId}}
+Content-Type: application/json
+
+{
+  "reason": 0,
+  "description": "This review contains inappropriate language and seems fake"
+}
+
+### Get property review stats
+GET {{ReviewService_HostAddress}}/api/reviews/stats/property/{{propertyId}}
+
+###
+### MODERATION ENDPOINTS
+###
+
+### Get pending reviews for moderation
+GET {{ReviewService_HostAddress}}/api/moderation/pending-reviews?pageNumber=1&pageSize=10
+
+### Moderate a review
+POST {{ReviewService_HostAddress}}/api/moderation/reviews/{{reviewId}}/moderate
+Content-Type: application/json
+
+{
+  "status": 2,
+  "moderationNotes": "Review approved after manual review - content appropriate"
+}
+
+### Get flagged reviews
+GET {{ReviewService_HostAddress}}/api/moderation/flagged-reviews
+
+### Get flags for a specific review
+GET {{ReviewService_HostAddress}}/api/moderation/flags/{{reviewId}}
+
+### Resolve a flag
+POST {{ReviewService_HostAddress}}/api/moderation/flags/{{flagId}}/resolve
+Content-Type: application/json
+
+{
+  "status": 3,
+  "resolution": "Flag reviewed and dismissed - content does not violate guidelines"
+}
+
+### Get moderation statistics
+GET {{ReviewService_HostAddress}}/api/moderation/stats
+
+### Run auto-moderation
+POST {{ReviewService_HostAddress}}/api/moderation/auto-moderate
