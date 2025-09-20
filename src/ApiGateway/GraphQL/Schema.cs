@@ -1,8 +1,9 @@
 using GraphQL.Types;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ApiGateway.GraphQL
 {
-    public class ApiGatewaySchema : GraphQL.Types.Schema
+    public class ApiGatewaySchema : Schema
     {
         public ApiGatewaySchema(IServiceProvider serviceProvider) : base(serviceProvider)
         {

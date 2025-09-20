@@ -1,6 +1,7 @@
 using ApiGateway.Models;
 using ApiGateway.Services;
 using ApiGateway.GraphQL.Types;
+using ApiGateway.GraphQL.Types;
 using GraphQL;
 using GraphQL.Types;
 
@@ -45,7 +46,7 @@ namespace ApiGateway.GraphQL.Resolvers
             }
         }
 
-        public async Task<List<Property>> GetProperties(PropertyFilterInputType? filter = null, int skip = 0, int take = 20)
+        public async Task<List<Property>> GetProperties(PropertyFilter? filter = null, int skip = 0, int take = 20)
         {
             try
             {
@@ -198,7 +199,7 @@ namespace ApiGateway.GraphQL.Resolvers
             }
         }
 
-        private string BuildQueryString(PropertyFilterInputType? filter, int skip, int take)
+        private string BuildQueryString(PropertyFilter? filter, int skip, int take)
         {
             var queryParams = new List<string> { $"skip={skip}", $"take={take}" };
             
@@ -261,16 +262,4 @@ namespace ApiGateway.GraphQL.Resolvers
         }
     }
 
-    public class PropertyFilterInputType
-    {
-        public string? City { get; set; }
-        public string? State { get; set; }
-        public string? Country { get; set; }
-        public PropertyType? PropertyType { get; set; }
-        public decimal? MinPrice { get; set; }
-        public decimal? MaxPrice { get; set; }
-        public int? MinGuests { get; set; }
-        public int? MaxGuests { get; set; }
-        public bool? InstantBookOnly { get; set; }
-    }
 }

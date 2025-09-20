@@ -2,8 +2,10 @@ using ApiGateway.Services;
 using ApiGateway.GraphQL;
 using ApiGateway.GraphQL.Types;
 using ApiGateway.GraphQL.Resolvers;
-using GraphQL.Server;
+using GraphQL;
+using GraphQL.Types;
 using GraphQL.Server.Ui.Playground;
+using GraphQL.Server;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -38,19 +40,11 @@ builder.Services.AddScoped<Mutation>();
 builder.Services.AddScoped<ApiGatewaySchema>();
 
 // Add GraphQL services
-builder.Services.AddGraphQL(options =>
-{
-    options.EnableMetrics = true;
-    options.UnhandledExceptionDelegate = ctx =>
-    {
-        Console.WriteLine("GraphQL Error: " + ctx.OriginalException?.Message);
-        return Task.CompletedTask;
-    };
-})
-.AddSystemTextJson()
-.AddGraphTypes(typeof(ApiGatewaySchema))
-.AddDataLoader()
-.AddErrorInfoProvider(opt => opt.ExposeExceptionStackTrace = builder.Environment.IsDevelopment());
+builder.Services.AddSingleton<ISchema, ApiGatewaySchema>();
+
+builder.Services.AddGraphQL(b => b
+    .AddSystemTextJson()
+    .AddErrorInfoProvider(opt => opt.ExposeExceptionDetails = builder.Environment.IsDevelopment()));
 
 // Add JWT Authentication
 var jwtKey = builder.Configuration["Jwt:Key"] ?? "your-super-secret-jwt-key-that-is-at-least-256-bits-long";
@@ -103,10 +97,7 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
-    app.UseGraphQLPlayground(new GraphQLPlaygroundOptions
-    {
-        Path = "/ui/playground"
-    });
+    app.UseGraphQLPlayground("/ui/playground");
 }
 
 app.UseRouting();

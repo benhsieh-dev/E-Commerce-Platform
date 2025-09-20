@@ -1,7 +1,9 @@
 using GraphQL.Types;
+using GraphQL;
 using ApiGateway.GraphQL.Types;
 using ApiGateway.GraphQL.Resolvers;
 using ApiGateway.Models;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ApiGateway.GraphQL
 {
@@ -46,7 +48,7 @@ namespace ApiGateway.GraphQL
                 });
 
             // Property queries
-            Field<PropertyType>("property")
+            Field<Types.PropertyType>("property")
                 .Description("Get a property by ID")
                 .Argument<NonNullGraphType<IdGraphType>>("id", "The unique identifier of the property")
                 .ResolveAsync(async context =>
@@ -56,21 +58,32 @@ namespace ApiGateway.GraphQL
                     return await propertyResolver!.GetPropertyById(id);
                 });
 
-            Field<ListGraphType<PropertyType>>("properties")
+            Field<ListGraphType<Types.PropertyType>>("properties")
                 .Description("Get all properties")
-                .Argument<PropertyFilterInputType>("filter", "Filters for property search")
+                .Argument<Types.PropertyFilterInputType>("filter", "Filters for property search")
                 .Argument<IntGraphType>("skip", "Number of properties to skip")
                 .Argument<IntGraphType>("take", "Number of properties to take")
                 .ResolveAsync(async context =>
                 {
                     var propertyResolver = context.RequestServices?.GetService<PropertyResolver>();
-                    var filter = context.GetArgument<PropertyFilterInputType>("filter");
+                    var filterInput = context.GetArgument<IDictionary<string, object?>>("filter");
+                    var filter = filterInput != null ? new PropertyFilter
+                    {
+                        City = filterInput.TryGetValue("city", out var city) ? city?.ToString() : null,
+                        State = filterInput.TryGetValue("state", out var state) ? state?.ToString() : null,
+                        Country = filterInput.TryGetValue("country", out var country) ? country?.ToString() : null,
+                        MinPrice = filterInput.TryGetValue("minPrice", out var minPrice) && minPrice != null ? Convert.ToDecimal(minPrice) : null,
+                        MaxPrice = filterInput.TryGetValue("maxPrice", out var maxPrice) && maxPrice != null ? Convert.ToDecimal(maxPrice) : null,
+                        MinGuests = filterInput.TryGetValue("minGuests", out var minGuests) && minGuests != null ? Convert.ToInt32(minGuests) : null,
+                        MaxGuests = filterInput.TryGetValue("maxGuests", out var maxGuests) && maxGuests != null ? Convert.ToInt32(maxGuests) : null,
+                        InstantBookOnly = filterInput.TryGetValue("instantBookOnly", out var instantBook) && instantBook != null ? Convert.ToBoolean(instantBook) : null
+                    } : null;
                     var skip = context.GetArgument<int>("skip", 0);
                     var take = context.GetArgument<int>("take", 20);
                     return await propertyResolver!.GetProperties(filter, skip, take);
                 });
 
-            Field<ListGraphType<PropertyType>>("propertiesByHost")
+            Field<ListGraphType<Types.PropertyType>>("propertiesByHost")
                 .Description("Get properties by host")
                 .Argument<NonNullGraphType<IdGraphType>>("hostId", "The unique identifier of the host")
                 .Argument<IntGraphType>("skip", "Number of properties to skip")
@@ -84,7 +97,7 @@ namespace ApiGateway.GraphQL
                     return await propertyResolver!.GetPropertiesByHost(hostId, skip, take);
                 });
 
-            Field<ListGraphType<PropertyType>>("searchProperties")
+            Field<ListGraphType<Types.PropertyType>>("searchProperties")
                 .Description("Search properties")
                 .Argument<StringGraphType>("location", "Location to search")
                 .Argument<DateTimeGraphType>("checkIn", "Check-in date")
@@ -135,13 +148,19 @@ namespace ApiGateway.GraphQL
 
             Field<ListGraphType<BookingType>>("bookings")
                 .Description("Get all bookings")
-                .Argument<BookingFilterInputType>("filter", "Filters for booking search")
+                .Argument<Types.BookingFilterInputType>("filter", "Filters for booking search")
                 .Argument<IntGraphType>("skip", "Number of bookings to skip")
                 .Argument<IntGraphType>("take", "Number of bookings to take")
                 .ResolveAsync(async context =>
                 {
                     var bookingResolver = context.RequestServices?.GetService<BookingResolver>();
-                    var filter = context.GetArgument<BookingFilterInputType>("filter");
+                    var filterInput = context.GetArgument<IDictionary<string, object?>>("filter");
+                    var filter = filterInput != null ? new BookingFilter
+                    {
+                        GuestId = filterInput.TryGetValue("guestId", out var guestId) && guestId != null ? Guid.Parse(guestId.ToString()!) : null,
+                        HostId = filterInput.TryGetValue("hostId", out var hostId) && hostId != null ? Guid.Parse(hostId.ToString()!) : null,
+                        PropertyId = filterInput.TryGetValue("propertyId", out var propertyId) && propertyId != null ? Guid.Parse(propertyId.ToString()!) : null
+                    } : null;
                     var skip = context.GetArgument<int>("skip", 0);
                     var take = context.GetArgument<int>("take", 20);
                     return await bookingResolver!.GetBookings(filter, skip, take);

@@ -51,7 +51,7 @@ namespace ApiGateway.GraphQL.Types
         }
     }
 
-    public class ReviewTypeEnumType : EnumerationGraphType<ReviewType>
+    public class ReviewTypeEnumType : EnumerationGraphType<Models.ReviewType>
     {
         public ReviewTypeEnumType()
         {

@@ -1,7 +1,9 @@
 using GraphQL.Types;
+using GraphQL;
 using ApiGateway.GraphQL.Types;
 using ApiGateway.GraphQL.Resolvers;
 using ApiGateway.Models;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ApiGateway.GraphQL
 {
@@ -32,7 +34,7 @@ namespace ApiGateway.GraphQL
                     var userResolver = context.RequestServices?.GetService<UserResolver>();
                     var id = context.GetArgument<Guid>("id");
                     var userInput = context.GetArgument<User>("user");
-                    var token = context.UserContext as string;
+                    var token = context.UserContext?.ToString();
                     return await userResolver!.UpdateUser(id, userInput);
                 });
 
@@ -75,18 +77,18 @@ namespace ApiGateway.GraphQL
                 });
 
             // Property mutations
-            Field<PropertyType>("createProperty")
+            Field<Types.PropertyType>("createProperty")
                 .Description("Create a new property")
                 .Argument<NonNullGraphType<PropertyInputType>>("property", "The property input")
                 .ResolveAsync(async context =>
                 {
                     var propertyResolver = context.RequestServices?.GetService<PropertyResolver>();
                     var propertyInput = context.GetArgument<Property>("property");
-                    var token = context.UserContext as string;
+                    var token = context.UserContext?.ToString();
                     return await propertyResolver!.CreateProperty(propertyInput, token);
                 });
 
-            Field<PropertyType>("updateProperty")
+            Field<Types.PropertyType>("updateProperty")
                 .Description("Update an existing property")
                 .Argument<NonNullGraphType<IdGraphType>>("id", "The unique identifier of the property")
                 .Argument<NonNullGraphType<PropertyInputType>>("property", "The property input")
@@ -95,7 +97,7 @@ namespace ApiGateway.GraphQL
                     var propertyResolver = context.RequestServices?.GetService<PropertyResolver>();
                     var id = context.GetArgument<Guid>("id");
                     var propertyInput = context.GetArgument<Property>("property");
-                    var token = context.UserContext as string;
+                    var token = context.UserContext?.ToString();
                     return await propertyResolver!.UpdateProperty(id, propertyInput, token);
                 });
 
@@ -106,7 +108,7 @@ namespace ApiGateway.GraphQL
                 {
                     var propertyResolver = context.RequestServices?.GetService<PropertyResolver>();
                     var id = context.GetArgument<Guid>("id");
-                    var token = context.UserContext as string;
+                    var token = context.UserContext?.ToString();
                     return await propertyResolver!.DeleteProperty(id, token);
                 });
 
@@ -118,7 +120,7 @@ namespace ApiGateway.GraphQL
                 {
                     var bookingResolver = context.RequestServices?.GetService<BookingResolver>();
                     var bookingInput = context.GetArgument<Booking>("booking");
-                    var token = context.UserContext as string;
+                    var token = context.UserContext?.ToString();
                     return await bookingResolver!.CreateBooking(bookingInput, token);
                 });
 
@@ -131,7 +133,7 @@ namespace ApiGateway.GraphQL
                     var bookingResolver = context.RequestServices?.GetService<BookingResolver>();
                     var id = context.GetArgument<Guid>("id");
                     var bookingInput = context.GetArgument<Booking>("booking");
-                    var token = context.UserContext as string;
+                    var token = context.UserContext?.ToString();
                     return await bookingResolver!.UpdateBooking(id, bookingInput, token);
                 });
 
@@ -144,7 +146,7 @@ namespace ApiGateway.GraphQL
                     var bookingResolver = context.RequestServices?.GetService<BookingResolver>();
                     var id = context.GetArgument<Guid>("id");
                     var status = context.GetArgument<BookingStatus>("status");
-                    var token = context.UserContext as string;
+                    var token = context.UserContext?.ToString();
                     return await bookingResolver!.UpdateBookingStatus(id, status, token);
                 });
 
@@ -157,7 +159,7 @@ namespace ApiGateway.GraphQL
                     var bookingResolver = context.RequestServices?.GetService<BookingResolver>();
                     var id = context.GetArgument<Guid>("id");
                     var reason = context.GetArgument<string>("reason");
-                    var token = context.UserContext as string;
+                    var token = context.UserContext?.ToString();
                     return await bookingResolver!.CancelBooking(id, reason, token);
                 });
 
@@ -168,7 +170,7 @@ namespace ApiGateway.GraphQL
                 {
                     var bookingResolver = context.RequestServices?.GetService<BookingResolver>();
                     var id = context.GetArgument<Guid>("id");
-                    var token = context.UserContext as string;
+                    var token = context.UserContext?.ToString();
                     return await bookingResolver!.CheckIn(id, token);
                 });
 
@@ -179,7 +181,7 @@ namespace ApiGateway.GraphQL
                 {
                     var bookingResolver = context.RequestServices?.GetService<BookingResolver>();
                     var id = context.GetArgument<Guid>("id");
-                    var token = context.UserContext as string;
+                    var token = context.UserContext?.ToString();
                     return await bookingResolver!.CheckOut(id, token);
                 });
         }

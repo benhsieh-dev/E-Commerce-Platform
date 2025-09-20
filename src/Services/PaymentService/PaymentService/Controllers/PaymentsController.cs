@@ -80,7 +80,7 @@ namespace PaymentService.Controllers
                     Currency = p.Currency,
                     PaymentType = p.PaymentType,
                     Status = p.Status,
-                    PaymentMethod = p.PaymentMethod,
+                    PaymentMethod = p.PaymentMethod.Type,
                     ExternalTransactionId = p.ExternalTransactionId,
                     Description = p.Description,
                     CreatedAt = p.CreatedAt,
@@ -141,7 +141,7 @@ namespace PaymentService.Controllers
                 Currency = payment.Currency,
                 PaymentType = payment.PaymentType,
                 Status = payment.Status,
-                PaymentMethod = payment.PaymentMethod,
+                PaymentMethod = payment.PaymentMethod.Type,
                 ExternalTransactionId = payment.ExternalTransactionId,
                 Description = payment.Description,
                 CreatedAt = payment.CreatedAt,
@@ -200,7 +200,15 @@ namespace PaymentService.Controllers
                 Currency = createPaymentDto.Currency,
                 PaymentType = createPaymentDto.PaymentType,
                 Status = PaymentStatus.Pending,
-                PaymentMethod = PaymentMethodType.CreditCard, // Should come from payment method lookup
+                PaymentMethod = new PaymentMethod 
+                {
+                    Id = createPaymentDto.PaymentMethodId,
+                    Type = PaymentMethodType.CreditCard, // Should come from payment method lookup
+                    UserId = createPaymentDto.PayerId,
+                    IsActive = true,
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow
+                },
                 Description = createPaymentDto.Description,
                 PlatformFee = platformFee,
                 ProcessingFee = processingFee,
@@ -225,7 +233,7 @@ namespace PaymentService.Controllers
                 Currency = payment.Currency,
                 PaymentType = payment.PaymentType,
                 Status = payment.Status,
-                PaymentMethod = payment.PaymentMethod,
+                PaymentMethod = payment.PaymentMethod.Type,
                 Description = payment.Description,
                 CreatedAt = payment.CreatedAt,
                 UpdatedAt = payment.UpdatedAt,

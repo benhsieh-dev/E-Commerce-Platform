@@ -61,7 +61,7 @@ namespace ApiGateway.GraphQL.Types
         }
     }
 
-    public class PaymentTypeEnumType : EnumerationGraphType<PaymentType>
+    public class PaymentTypeEnumType : EnumerationGraphType<Models.PaymentType>
     {
         public PaymentTypeEnumType()
         {
@@ -79,7 +79,7 @@ namespace ApiGateway.GraphQL.Types
         }
     }
 
-    public class PaymentMethodTypeEnumType : EnumerationGraphType<PaymentMethodType>
+    public class PaymentMethodTypeEnumType : EnumerationGraphType<Models.PaymentMethodType>
     {
         public PaymentMethodTypeEnumType()
         {

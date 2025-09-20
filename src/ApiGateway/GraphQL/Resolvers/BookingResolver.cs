@@ -1,6 +1,7 @@
 using ApiGateway.Models;
 using ApiGateway.Services;
 using ApiGateway.GraphQL.Types;
+using ApiGateway.GraphQL.Types;
 using GraphQL;
 using GraphQL.Types;
 
@@ -51,7 +52,7 @@ namespace ApiGateway.GraphQL.Resolvers
             }
         }
 
-        public async Task<List<Booking>> GetBookings(BookingFilterInputType? filter = null, int skip = 0, int take = 20)
+        public async Task<List<Booking>> GetBookings(BookingFilter? filter = null, int skip = 0, int take = 20)
         {
             try
             {
@@ -292,7 +293,7 @@ namespace ApiGateway.GraphQL.Resolvers
             }
         }
 
-        private string BuildQueryString(BookingFilterInputType? filter, int skip, int take)
+        private string BuildQueryString(BookingFilter? filter, int skip, int take)
         {
             var queryParams = new List<string> { $"skip={skip}", $"take={take}" };
             
@@ -333,17 +334,4 @@ namespace ApiGateway.GraphQL.Resolvers
         }
     }
 
-    public class BookingFilterInputType
-    {
-        public Guid? GuestId { get; set; }
-        public Guid? HostId { get; set; }
-        public Guid? PropertyId { get; set; }
-        public BookingStatus? Status { get; set; }
-        public DateTime? CheckInDateFrom { get; set; }
-        public DateTime? CheckInDateTo { get; set; }
-        public DateTime? CheckOutDateFrom { get; set; }
-        public DateTime? CheckOutDateTo { get; set; }
-        public DateTime? CreatedFrom { get; set; }
-        public DateTime? CreatedTo { get; set; }
-    }
 }

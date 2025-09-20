@@ -46,7 +46,7 @@ namespace ApiGateway.GraphQL.Types
         }
     }
 
-    public class PropertyTypeEnumType : EnumerationGraphType<PropertyType>
+    public class PropertyTypeEnumType : EnumerationGraphType<Models.PropertyType>
     {
         public PropertyTypeEnumType()
         {

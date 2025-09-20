@@ -64,7 +64,7 @@ namespace ApiGateway.GraphQL.Types
         }
     }
 
-    public class NotificationTypeEnumType : EnumerationGraphType<NotificationType>
+    public class NotificationTypeEnumType : EnumerationGraphType<Models.NotificationType>
     {
         public NotificationTypeEnumType()
         {

@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="GraphQL.Server.All" Version="8.1.0" />
+    <PackageReference Include="GraphQL.Server.Transports.AspNetCore" Version="8.1.0" />
     <PackageReference Include="GraphQL.Server.Ui.Playground" Version="8.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.0" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.0" />
